@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechReview - Portal Ulasan & Spesifikasi Gadget Akurat</title>
+    <style>
+        :root {
+            /*skema warna:midnight violet & spesifikasi gadget</title>*/
+            --primary: #8b5cf6;
+            --secondary: #6d28d9;
+            --dark: #1e1b4b;
+            --light: #f5f3ff;
+            --success: #10b981;
+            --danger: #f43f5e;
+            --warning: #f59e0b;
+            --gray: #64748b;
+            --border: #ddd6fe;
+            --shopee: #ee4d2d;
+            --tokopedia: #03b300;
+            --blibli: #0095da;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 1.2rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 1.6rem;
+            color: #3b82f6;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+        .logo span { color: white; }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        nav a:hover, nav a.active {
+            color: white;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 3rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        .hero h2 { font-size: 2.2rem; margin-bottom: 0.8rem; font-weight: 800; }
+        .hero p { font-size: 1.1rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        .category-box-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cat-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .cat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+        }
+
+        .section-title {
+            margin: 2.5rem 0 1.25rem 0;
+            font-size: 1.6rem;
+            border-left: 5px solid var(--primary);
+            padding-left: 0.75rem;
+            color: var(--dark);
+        }
+        .section-title:first-of-type { margin-top: 0; }
+
+        .gadget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+        }
+
+        .card-img { height: 180px; overflow: hidden; background: #cbd5e1; }
+        .card-img img { width: 100%; height: 100%; object-fit: cover; }
+        .card-content { padding: 1.2rem; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        .front-score-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(15, 23, 42, 0.85);
+            color: #f59e0b;
+            padding: 0.4rem 0.7rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .tag {
+            align-self: flex-start;
+            background: #e0f2fe;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .card h3 { font-size: 1.2rem; margin-bottom: 0.2rem; color: var(--dark); }
+        .product-one-liner { font-size: 0.88rem; font-weight: 600; color: #1e3a8a; margin-bottom: 0.4rem; }
+        .product-price { font-size: 1.05rem; font-weight: 700; color: var(--danger); margin-bottom: 0.4rem; }
+        
+        .verdict-badge {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        .worth-banget { background-color: #d1fae5; color: var(--success); border: 1px solid #a7f3d0; }
+        .worth { background-color: #fef3c7; color: var(--warning); border: 1px solid #fde68a; }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+            text-decoration: none;
+            width: 100%;
+        }
+        .btn:hover { background: var(--secondary); }
+
+        .detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 2rem;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .detail-left { display: flex; flex-direction: column; gap: 1.2rem; }
+        .detail-img-container { width: 100%; height: 260px; border-radius: 12px; overflow: hidden; }
+        .detail-img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .rating-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; }
+        .rating-title { font-weight: 700; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--gray); }
+        .rating-item { display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.9rem; }
+        .rating-stars { color: #f59e0b; font-weight: bold; }
+
+        .shop-box { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 1rem; margin-top: 1rem; }
+        .shop-box h4 { margin-bottom: 0.6rem; font-size: 0.95rem; font-weight: bold; color: var(--dark); }
+        .shop-links { display: flex; flex-direction: column; gap: 0.5rem; }
+        .shop-btn { display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; padding: 0.5rem; border-radius: 6px; font-weight: bold; font-size: 0.85rem; transition: opacity 0.2s; }
+        .shop-btn:hover { opacity: 0.9; }
+        .shopee { background-color: var(--shopee); }
+        .tokopedia { background-color: var(--tokopedia); }
+        .blibli { background-color: var(--blibli); }
+
+        .toc-box {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .toc-title { font-weight: bold; font-size: 1rem; margin-bottom: 0.5rem; color: var(--dark); }
+        .toc-links { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; }
+        .toc-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .toc-links a:hover { text-decoration: underline; }
+
+        .financial-box { background: #fffbeb; border: 1px solid #fef3c7; border-left: 5px solid var(--warning); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.92rem; color: #92400e; }
+        .financial-box h4 { font-weight: 800; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .clean-spec-table { width: 100%; border-collapse: collapse; margin: 1rem 0; background: #f8fafc; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .clean-spec-table td { padding: 0.65rem 0.85rem; font-size: 0.88rem; border-bottom: 1px solid #e2e8f0; }
+        .clean-spec-table tr:last-child td { border-bottom: none; }
+        .clean-spec-table td.label-spec { font-weight: 700; color: #334155; width: 35%; background-color: #f1f5f9; border-right: 1px solid #e2e8f0; }
+
+        .tech-simple-box { background: #f8fafc; border-left: 5px solid var(--gray); padding: 1rem; border-radius: 8px; margin: 1rem 0; font-size: 0.92rem; }
+        .tech-simple-box h4 { color: #334155; margin-bottom: 0.4rem; font-weight: 700; }
+
+        .tech-explain-box { background: #eff6ff; border-left: 5px solid var(--primary); padding: 1.2rem; border-radius: 8px; margin: 1rem 0; font-size: 0.92rem; }
+        .tech-explain-box h4 { color: #1e40af; margin-bottom: 0.8rem; font-weight: 700; border-bottom: 1px dashed #bfdbfe; padding-bottom: 0.3rem; }
+        
+        .tech-item { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e0f2fe; }
+        .tech-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+        .pros-cons-flex { display: flex; gap: 1rem; margin: 1rem 0; }
+        .pc-box { flex: 1; padding: 1rem; border-radius: 8px; }
+        .pc-box-pros { background: #f0fdf4; border-left: 5px solid var(--success); }
+        .pc-box-cons { background: #fdf2f2; border-left: 5px solid var(--danger); }
+        .pc-box h4 { font-weight: 700; margin-bottom: 0.5rem; }
+        .pc-box ul { list-style-type: none; padding-left: 0; }
+        .pc-box ul li { margin-bottom: 0.5rem; font-size: 0.9rem; position: relative; padding-left: 1rem; }
+        .pc-box ul li::before { content: "•"; position: absolute; left: 0; color: inherit; }
+
+        .compare-selector-box { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+        .compare-select { flex: 1; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border); outline: none; font-size: 0.95rem; min-width: 200px; }
+        .compare-table-result { width: 100%; background: white; border-collapse: collapse; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 1.5rem; }
+        .compare-table-result th, .compare-table-result td { padding: 1rem; border: 1px solid #e2e8f0; text-align: left; }
+        .compare-table-result th { background: var(--dark); color: white; }
+        .compare-table-result tr:nth-child(even) { background: #f8fafc; }
+
+        @media (max-width: 768px) {
+            .detail-container, .pros-cons-flex { flex-direction: column; text-align: center; }
+            .compare-selector-box { flex-direction: column; align-items: stretch; }
+            .pc-box ul li { padding-left: 0; }
+            .pc-box ul li::before { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo" onclick="switchPage('home')"><h1>Tech<span>Review</span></h1></div>
+            <nav>
+                <ul>
+                    <li><a onclick="switchPage('home')" id="nav-home" class="active">Beranda</a></li>
+                    <li><a onclick="switchPage('compare')" id="nav-compare">Bandingkan</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="page-home" class="page-section active">
+            <div class="hero">
+                <h2>Portal Eksklusif Review Gadget</h2>
+                <p>Analisis spesifikasi mendalam, perbandingan mekanis instan, dan edukasi arsitektur teknologi secara ringkas.</p>
+            </div>
+
+            <h3 class="section-title">Kategori Menu Populer</h3>
+            <div class="category-box-grid">
+                <div class="cat-card" onclick="viewDetail('alpha-x')">📱 Smartphone Premium</div>
+                <div class="cat-card" onclick="viewDetail('prime-book')">💻 Laptop & Ultrabook</div>
+                <div class="cat-card" onclick="viewDetail('tab-pad-pro')">📁 Tablet & Pad Produktivitas</div>
+                <div class="cat-card" onclick="viewDetail('sonic-audio-tws')">🎧 Audio & TWS Buds</div>
+            </div>
+
+            <h2 class="section-title">Gawai Pilihan Rekomendasi</h2>
+            <div class="gadget-grid" id="editors-choice-grid"></div>
+        </section>
+
+        <section id="page-detail" class="page-section">
+            <button class="btn" onclick="switchPage('home')" style="width: auto; margin-bottom: 1.5rem; background: #64748b; padding: 0.5rem 1rem;">&larr; Kembali ke Beranda</button>
+            <div id="detail-content"></div>
+        </section>
+
+        <section id="page-compare" class="page-section">
+            <h2 class="section-title">Alat Komparasi Gadget Berdampingan</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--gray);">Pilih dua perangkat di bawah ini untuk menganalisis perbandingan spesifikasi mekanis secara langsung.</p>
+            
+            <div class="compare-selector-box">
+                <select id="compare1" class="compare-select" onchange="processComparison()"></select>
+                <div style="font-weight: bold; color: var(--gray);">VS</div>
+                <select id="compare2" class="compare-select" onchange="processComparison()"></select>
+            </div>
+
+            <div id="compare-result-area">
+                <p style="text-align: center; color: var(--gray); padding: 2rem; background: white; border-radius: 8px;">Silakan pilih gawai berbeda pada menu drop-down di atas.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div style="max-width: 1200px; margin: 0 auto; text-align: center; color: #94a3b8; padding: 2rem 0; border-top: 1px solid #334155;">
+            <p>&copy; 2026 TechReview Tim Proyek Akademik.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Database Gadget Terstruktur (Menggunakan link pencarian official store asli)
+        const gadgetDatabase = {
+            'alpha-x': {
+                name: 'Smartphone Alpha X',
+                oneLiner: 'Flagship premium dengan Qualcomm Snapdragon 8 Gen 4 dan Kamera Periskop.',
+                price: 'Rp 14.999.000',
+                category: 'Smartphone',
+                verdict: 'WORTH IT BANGET',
+                verdictClass: 'worth-banget',
+                score: '9.5',
+                stars: '⭐⭐⭐⭐⭐',
+                isEditorsChoice: true,
+                imgUrl: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&auto=format&fit=crop&q=80',
+                financialAnalysis: 'Berada di angka hampir 15 juta rupiah, ponsel ini menawarkan nilai investasi tinggi melalui jaminan pembaruan sistem operasi jangka panjang dan teknologi kamera periskop premium. Sangat masuk akal secara finansial bagi pengguna yang mencari ponsel flagship tanpa perlu ganti gawai selama 5 tahun ke depan.',
+                techSimple: `
+                    <div class="tech-item">
+                        <strong>1. Kamera Periskop:</strong><br>
+                        <em>Penjelasan Sederhana:</em> Teknologi kamera yang menggunakan susunan cermin melintang (seperti periskop kapal selam) di dalam bodi ponsel yang tipis.<br>
+                        <em>Fungsinya:</em> Membuat ponsel bisa melakukan Zoom (memotret objek jarak sangat jauh) dengan hasil yang tetap tajam dan jernih, tanpa membuat bodi ponsel menjadi tebal atau menonjol keluar.
+                    </div>
+                    <div class="tech-item" style="margin-top: 10px;">
+                        <strong>2. Panel LTPO AMOLED:</strong><br>
+                        <em>Penjelasan Sederhana:</em> Jenis layar premium yang sangat pintar dalam mengatur kecepatan animasi gambar (refresh rate) secara otomatis.<br>
+                        <em>Fungsinya:</em> Saat bermain game, layar akan menjadi sangat mulus (120Hz). Namun, saat Anda hanya membaca teks diam, layar otomatis turun ke 1Hz sehingga membuat baterai ponsel menjadi jauh lebih hemat.
+                    </div>
+                `,
+                techExplain: `
+                    <div class="tech-item">
+                        <strong>🔍 Analisis Spesifikasi Mendalam:</strong><br>
+                        Chipset Snapdragon 8 Gen 4 dengan fabrikasi 3nm memberikan peningkatan performa CPU sebesar 45% dan efisiensi daya 40% lebih baik dibandingkan generasi sebelumnya.
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚔️ Perbandingan Mekanis Instan:</strong><br>
+                        Alpha X: Kamera Periskop 64MP (3x Zoom Optik asli) vs Kompetitor Sekelas: Kamera Telefoto standar 12MP (Zoom Digital pecah).
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚙️ Edukasi Arsitektur Teknologi Secara Ringkas:</strong><br>
+                        Lensa ini menggunakan cermin pemantul horizontal di dalam bodi untuk melipat jalur cahaya. Hasilnya, Anda bisa membidik objek sangat jauh dengan tajam tanpa perlu modul kamera tebal yang menonjol keluar.
+                    </div>
+                `,
+                ratings: { 'Performa': '⭐ 9.7', 'Kamera': '⭐ 9.6', 'Layar': '⭐ 9.5', 'Baterai': '⭐ 9.2' },
+                techSpecs: {
+                    'Jaringan & Konektivitas': '5G, Wi-Fi 7, Bluetooth 5.4, NFC, USB-C 3.2',
+                    'Dimensi & Desain': '162.3 x 75.1 x 8.2 mm | 205 gram | IP68 Tahan Air',
+                    'Layar Utama': '6.78 inci LTPO AMOLED, 1.5K, 120Hz, HDR10+, 4500 nits',
+                    'Chipset & Prosesor': 'Qualcomm Snapdragon 8 Gen 4 (3nm) | GPU Adreno 830',
+                    'Memori & RAM': '12GB / 16GB LPDDR5X RAM | 256GB / 512GB UFS 4.0',
+                    'Kamera Belakang': 'Utama 50MP (OIS) + Periskop 64MP (3x Optik, OIS) + Ultrawide 50MP',
+                    'Kamera Depan': '32MP (Fokus Otomatis, Rekam Video 4K)',
+                    'Sistem Operasi': 'Android 16 dengan AlphaUI 3.0 (Jaminan Update 5 Tahun)',
+                    'Baterai & Daya': '5000 mAh | 90W Kabel (0-100% 35 mnt) | 50W Nirkabel',
+                    'Fitur Keamanan': 'Sensor Sidik Jari Ultrasonik di Layar, Face Unlock'
+                },
+                pros: [
+                    'Kamera periskop 64MP sangat tajam.', 'Performa chipset Snapdragon terbaru kencang.',
+                    'Pengisian daya baterai sangat cepat.', 'Layar AMOLED cerah di bawah matahari.',
+                    'Refresh rate 120Hz sangat mulus.', 'Hasil foto malam minim noise.',
+                    'Perekaman video stabil dengan OIS.', 'Desain bodi kokoh dan premium.',
+                    'Speaker stereo ganda sangat lantang.', 'Jaminan pembaruan software jangka panjang.'
+                ],
+                cons: [
+                    'Bodi belakang mudah kotor sidik jari.', 'Suhu hangat saat gaming berat.',
+                    'Tidak ada lubang audio jack 3.5mm.', 'Slot kartu memori eksternal absen.',
+                    'Harga relatif mahal di kelasnya.', 'Ukuran bodi agak besar di tangan.',
+                    'Modul kamera belakang terlalu menonjol.', 'Paket penjualan tanpa kepala charger.',
+                    'Fitur AI membutuhkan koneksi internet.', 'Bobot perangkat terasa agak berat.'
+                ],
+                links: { 
+                    shopee: 'https://shopee.co.id/search?keyword=smartphone%20flagship%20official', 
+                    tokopedia: 'https://www.tokopedia.com/search?q=smartphone%20flagship%20official', 
+                    blibli: 'https://www.blibli.com/cari/smartphone%20flagship%20official' 
+                }
+            },
+            'prime-book': {
+                name: 'Prime Book 14 Pro',
+                oneLiner: 'Laptop Aluminium Unibody bertenaga Intel Core Ultra 7 dengan fitur NPU.',
+                price: 'Rp 11.499.000',
+                category: 'Laptop',
+                verdict: 'WORTH IT',
+                verdictClass: 'worth',
+                score: '8.8',
+                stars: '⭐⭐⭐⭐',
+                isEditorsChoice: true,
+                imgUrl: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600&auto=format&fit=crop&q=80',
+                financialAnalysis: 'Dengan harga 11 jutaan, laptop ini merupakan aset produktivitas yang sangat efisien bagi pekerja profesional dan mahasiswa. Kombinasi sasis aluminium yang tahan lama dan prosesor hemat daya memberikan keseimbangan sempurna antara harga beli dan fungsionalitas kerja harian.',
+                techSimple: `
+                    <div class="tech-item">
+                        <strong>Prosesor Intel Core Ultra / NPU:</strong><br>
+                        <em>Penjelasan Sederhana:</em> Otak komputer generasi baru yang dilengkapi dengan bagian khusus bernama NPU (Neural Processing Unit) untuk mengurus kecerdasan buatan (AI).<br>
+                        <em>Fungsinya:</em> Membuat laptop mampu menjalankan fitur AI secara cepat (seperti menyensor latar belakang video secara otomatis atau mengedit foto lewat perintah teks) tanpa membuat baterai boros.
+                    </div>
+                `,
+                techExplain: `
+                    <div class="tech-item">
+                        <strong>🔍 Analisis Spesifikasi Mendalam:</strong><br>
+                        Prosesor Intel Core Ultra 7 membawa arsitektur 3-tier compute (P-Core, E-Core, dan LP E-Core) yang membagi tugas komputasi secara pintar untuk menghemat baterai laptop.
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚔️ Perbandingan Mekanis Instan:</strong><br>
+                        Prime Book 14 Pro: Konstruksi sasis Aluminium Unibody (Sangat kokoh & ringan) vs Laptop Umum: Sasis berbahan Plastik Polikarbonat (Ringkih & mudah melengkung).
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚙️ Edukasi Arsitektur Teknologi Secara Ringkas:</strong><br>
+                        NPU adalah bagian "otak" khusus di dalam prosesor yang dirancang hanya untuk menghitung beban kerja Kecerdasan Buatan (AI). Efeknya, laptop bisa memproses efek visual video secara instan tanpa membebani kartu grafis utama.
+                    </div>
+                `,
+                ratings: { 'Performa': '⭐ 8.9', 'Layar': '⭐ 8.7', 'Baterai': '⭐ 8.8' },
+                techSpecs: {
+                    'Dimensi & Material': '312.4 x 221.2 x 14.9 mm | 1.35 kg | Aluminium Unibody',
+                    'Layar Utama': '14.0 inci IPS LCD, 2.8K (2880 x 1800), 120Hz, 100% sRGB',
+                    'Prosesor (CPU)': 'Intel Core Ultra 7 155H (16 Core, up to 4.8 GHz)',
+                    'Grafis (GPU)': 'Intel Arc Graphics (Terintegrasi)',
+                    'Memori (RAM)': '16GB / 32GB LPDDR5X (On-board, Dual Channel)',
+                    'Penyimpanan': '512GB / 1TB SSD NVMe PCIe Gen4 x4',
+                    'Konektivitas': 'Wi-Fi 6E, Bluetooth 5.3 | 2x Thunderbolt 4, 1x USB-A',
+                    'Baterai & Pengisian': '70 Wh Li-Po | Pengisi Daya 65W USB-C Power Delivery',
+                    'Kamera & Audio': '1080p FHD Webcam dengan Privacy Shutter | Quad Speaker',
+                    'Sistem Operasi': 'Windows 11 Home Original (Termasuk Office Office)'
+                },
+                pros: [
+                    'Bodi aluminium sangat ringan tipis.', 'Layar jernih nyaman untuk kerja.',
+                    'Baterai awet untuk penggunaan harian.', 'Keyboard sangat empuk untuk mengetik.',
+                    'Touchpad luas dan sangat responsif.', 'Kinerja multitasking lancar tanpa hambatan.',
+                    'Kualitas webcam jernih untuk rapat.', 'Engsel layar kokoh tidak ringkih.',
+                    'Sistem pendingin bekerja cukup senyap.', 'Pengisian daya praktis lewat USB-C.'
+                ],
+                cons: [
+                    'Pilihan lubang colokan sangat terbatas.', 'Grafis kurang cocok untuk game berat.',
+                    'Suara kipas bising saat performa maksimal.', 'Kapasitas penyimpanan bawaan kurang besar.',
+                    'Kualitas suara speaker standar saja.', 'Layar belum mendukung fitur sentuh.',
+                    'Upgrade komponen internal sangat terbatas.', 'Harga suku cadang resmi mahal.',
+                    'Lapisan bodi mudah tergores benda tajam.', 'Desain terkesan monoton dan kaku.'
+                ],
+                links: { 
+                    shopee: 'https://shopee.co.id/search?keyword=intel%20core%20ultra%20laptop', 
+                    tokopedia: 'https://www.tokopedia.com/search?q=intel%20core%20ultra%20laptop', 
+                    blibli: 'https://www.blibli.com/cari/intel%20core%20ultra%20laptop' 
+                }
+            },
+            'tab-pad-pro': {
+                name: 'Tab Pad Pro 11',
+                oneLiner: 'Tablet produktivitas logam tipis dengan layar QHD+ 90Hz.',
+                price: 'Rp 6.799.000',
+                category: 'Tablet',
+                verdict: 'WORTH IT BANGET',
+                verdictClass: 'worth-banget',
+                score: '9.1',
+                stars: '⭐⭐⭐⭐⭐',
+                isEditorsChoice: true,
+                imgUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600&auto=format&fit=crop&q=80',
+                financialAnalysis: 'Tablet di kelas 6 jutaan ini adalah alternatif investasi yang cerdas untuk menunjang kebutuhan multimedia dan kreasi digital. Pilihan finansial yang tepat bagi pengguna yang membutuhkan fungsi laptop ringan tanpa harus membayar harga penuh sebuah komputer konvensional.',
+                techSimple: `
+                    <div class="tech-item">
+                        <strong>Layar QHD+ dengan Dukungan Stylus:</strong><br>
+                        <em>Penjelasan Sederhana:</em> Layar tablet dengan resolusi tinggi (sangat rapat dan padat) yang dipadukan dengan sensor penangkap sinyal pena digital (stylus).<br>
+                        <em>Fungsinya:</em> Gambar terlihat sangat tajam tanpa kotak-kotak piksel pecah, dan ketika Anda menulis, tidak ada jeda (delay) antara ujung pena dengan garis di layar.
+                    </div>
+                `,
+                techExplain: `
+                    <div class="tech-item">
+                        <strong>🔍 Analisis Spesifikasi Mendalam:</strong><br>
+                        Layar QHD+ dengan kerapatan piksel tinggi berpadu dengan lapisan digitizer aktif yang mampu membaca ribuan tingkat tekanan pena digital secara akurat.
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚔️ Perbandingan Mekanis Instan:</strong><br>
+                        Tab Pad Pro 11: Ketebalan bodi hanya 5.9 mm (Sangat ramping) vs Tablet Standar: Ketebalan bodi 7.5 mm ke atas (Terasa tebal dan berat digenggam).
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚙️ Edukasi Arsitektur Teknologi Secara Ringkas:</strong><br>
+                        Layar tablet memancarkan medan elektromagnetik tipis yang mendeteksi posisi ujung pena digital secara instan. Ini membuat coretan garis muncul di layar tanpa jeda waktu (zero latency).
+                    </div>
+                `,
+                ratings: { 'Performa': '⭐ 9.2', 'Layar': '⭐ 9.0', 'Audio': '⭐ 9.2' },
+                techSpecs: {
+                    'Jaringan & Konektivitas': 'Wi-Fi Only / Seluler 5G, Bluetooth 5.3, USB-C 3.1',
+                    'Dimensi & Desain': '246.5 x 160.8 x 5.9 mm | 465 gram | Bodi Metal Ramping',
+                    'Layar Utama': '11.0 inci IPS LCD, QHD+ (2560 x 1600), 90Hz, Dukungan Stylus',
+                    'Chipset & Prosesor': 'MediaTek Dimensity 8300 Ultra (4nm) | GPU Mali-G610',
+                    'Memori & RAM': '8GB LPDDR5X RAM | 128GB / 256GB UFS 3.1',
+                    'Kamera Belakang': '13MP Utama (Fokus Otomatis) + LED Flash',
+                    'Kamera Depan': '8MP Ultrawide (Posisi Lanskap)',
+                    'Sistem Operasi': 'Android 16 dengan TabOS 2.5',
+                    'Baterai & Daya': '8200 mAh | 33W Fast Charging',
+                    'Fitur Audio': 'Empat Speaker Stereo (Quad Speakers) Dolby Atmos'
+                },
+                pros: [
+                    'Stylus sangat responsif dan presisi.', 'Layar pas untuk menikmati multimedia.',
+                    'Desain bodi ramping mudah dibawa.', 'Daya tahan baterai sangat tangguh.',
+                    'Kualitas panel layar sangat akurat.', 'Antarmuka optimal untuk produktivitas tablet.',
+                    'Pengenalan wajah bekerja sangat cepat.', 'Mendukung koneksi magnetis papan tik.',
+                    'Kualitas tangkapan mikrofon sangat jernih.', 'Optimasi aplikasi pihak ketiga bagus.'
+                ],
+                cons: [
+                    'Stylus dijual terpisah dari kotak.', 'Performa kamera belakang biasa saja.',
+                    'Kecepatan pengisian baterai tergolong standar.', 'Varian memori internal paling bawah kecil.',
+                    'Tidak ada dukungan lubang audio.', 'Absennya fitur getar pada sistem.',
+                    'Harga aksesoris resmi cukup menguras dompet.', 'Kurang nyaman digenggam satu tangan.',
+                    'Kecerahan layar luar ruangan kurang.', 'Bahan bodi belakang agak licin.'
+                ],
+                links: { 
+                    shopee: 'https://shopee.co.id/search?keyword=tablet%20android%20official%20store', 
+                    tokopedia: 'https://www.tokopedia.com/search?q=tablet%20android%20official%20store', 
+                    blibli: 'https://www.blibli.com/cari/tablet%20android%20official%20store' 
+                }
+            },
+            'sonic-audio-tws': {
+                name: 'Sonic Sound Buds Pro',
+                oneLiner: 'TWS dengan driver Diafragma Titanium dan ANC hingga 48dB.',
+                price: 'Rp 1.750.000',
+                category: 'Audio',
+                verdict: 'WORTH IT',
+                verdictClass: 'worth',
+                score: '8.9',
+                stars: '⭐⭐⭐⭐',
+                isEditorsChoice: true,
+                imgUrl: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80',
+                financialAnalysis: 'Menawarkan efisiensi biaya yang luar biasa di segmen audio premium dengan menghadirkan fitur peredam bising (ANC) kelas atas. Aksesori ini menjadi pengeluaran yang sangat dibenarkan bagi pengguna dengan mobilitas tinggi yang membutuhkan durabilitas baterai tangguh.',
+                techSimple: `
+                    <div class="tech-item">
+                        <strong>ANC / Active Noise Cancellation:</strong><br>
+                        <em>Penjelasan Sederhana:</em> Teknologi peredam bising aktif yang menggunakan mikrofon luar untuk menangkap suara berisik di sekitar kita, lalu membuat "suara tandingan" untuk membatalkan kebisingan tersebut.<br>
+                        <em>Fungsinya:</em> Saat Anda memakai earphone ini di tempat umum, suara bising jalanan atau mesin kendaraan akan langsung sirna, sehingga musik terdengar bening.
+                    </div>
+                `,
+                techExplain: `
+                    <div class="tech-item">
+                        <strong>🔍 Analisis Spesifikasi Mendalam:</strong><br>
+                        Driver dinamis 11mm berlapis Titanium menghasilkan getaran audio beresolusi tinggi (Hi-Res) yang mempertahankan kejernihan suara vokal di tengah dentuman bass.
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚔️ Perbandingan Mekanis Instan:</strong><br>
+                        Sonic Buds Pro: Fitur Smart Hybrid ANC 48dB (Senyap total) vs TWS Murah: Fitur Peredam Bising Pasif standar (Suara luar masih bocor masuk).
+                    </div>
+                    <div class="tech-item">
+                        <strong>⚙️ Edukasi Arsitektur Teknologi Secara Ringkas:</strong><br>
+                        Mikrofon kecil pada TWS menangkap gelombang suara bising dari luar ruangan, lalu sistem komputer internal secara instan menciptakan gelombang suara tiruan yang terbalik untuk menghapus kebisingan tersebut sebelum sampai ke telinga Anda.
+                    </div>
+                `,
+                ratings: { 'Kualitas Audio': '⭐ 9.1', 'Peredaman ANC': '⭐ 8.9', 'Kenyamanan': '⭐ 8.8' },
+                techSpecs: {
+                    'Tipe Koneksi': 'True Wireless Stereo (TWS) | Bluetooth 5.4',
+                    'Audio Codec': 'LDAC, AAC, SBC (Hi-Res Wireless)',
+                    'Ukuran Driver': '11mm Dynamic Driver dengan Diafragma Titanium',
+                    'Peredam Bising': 'Active Noise Cancellation (ANC) hingga 48dB',
+                    'Daya Tahan Baterai': 'Earbud: 7 Jam (ANC On) / 9 Jam (ANC Off)',
+                    'Total Daya (Wadah)': 'Hingga 38 Jam total penggunaan bersama Wadah',
+                    'Pengisian Daya': 'USB-C (Fast Charge 10 mnt untuk 2 Jam) | Qi Wireless',
+                    'Ketahanan Air': 'Sertifikasi IPX5 (Tahan Cipratan Air)',
+                    'Fitur Mikrofon': '3 Mikrofon per Earbud dengan AI Noise Reduction',
+                    'Kontrol Sensor': 'Sentuhan Intuitif (Putar/Jeda, Lewati, Volume)'
+                },
+                pros: [
+                    'Kualitas bass sangat bertenaga empuk.', 'Peredam bising ANC sangat senyap.',
+                    'Daya tahan baterai wadah awet.', 'Koneksi bluetooth sangat stabil cepat.',
+                    'Sertifikasi tahan cipratan air keringat.', 'Desain modul telinga sangat ergonomis.',
+                    'Kualitas mikrofon telepon sangat jelas.', 'Mendukung fitur pengisian daya nirkabel.',
+                    'Latensi sangat rendah untuk menonton.', 'Bobot modul earphone sangat ringan.'
+                ],
+                cons: [
+                    'Ukuran wadah pengisi agak tebal.', 'Aplikasi pendukung membingungkan pengguna baru.',
+                    'Sentuhan sensitif sering tidak sengaja.', 'Isolasi suara pasif kurang kedap.',
+                    'Pilihan ukuran karet telinga terbatas.', 'Karakter suara vokal kurang tebal.',
+                    'Material plastik wadah terasa murah.', 'Jangkauan bluetooth agak memendek di ruangan.',
+                    'Fitur audio spasial kurang natural.', 'Harga kompetitif namun minim promo.'
+                ],
+                links: { 
+                    shopee: 'https://shopee.co.id/search?keyword=tws%20anc%20official%20store', 
+                    tokopedia: 'https://www.tokopedia.com/search?q=tws%20anc%20official%20store', 
+                    blibli: 'https://www.blibli.com/cari/tws%20anc%20official%20store' 
+                }
+            }
+        };
+
+        function renderEditorsChoice() {
+            const ecGrid = document.getElementById('editors-choice-grid');
+            if(!ecGrid) return;
+            ecGrid.innerHTML = '';
+            for(const [id, data] of Object.entries(gadgetDatabase)) {
+                if(data.isEditorsChoice) {
+                    ecGrid.innerHTML += `
+                        <div class="card">
+                            <div class="front-score-badge">★ ${data.score}</div>
+                            <div class="card-img"><img src="${data.imgUrl}" alt="${data.name}"></div>
+                            <div class="card-content">
+                                <span class="tag">${data.category}</span>
+                                <h3>${data.name}</h3>
+                                <div class="product-one-liner">${data.oneLiner}</div>
+                                <div class="product-price">${data.price}</div>
+                                <div class="verdict-badge ${data.verdictClass}" style="margin-top:0.5rem;">${data.verdict}</div>
+                                <button class="btn" onclick="viewDetail('${id}')">Buka Analisis &rarr;</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('nav a').forEach(nav => nav.classList.remove('active'));
+
+            const targetSection = document.getElementById(`page-${pageId}`);
+            if(targetSection) targetSection.classList.add('active');
+            
+            const navLink = document.getElementById(`nav-${pageId}`);
+            if(navLink) navLink.classList.add('active');
+            
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function scrollToSection(elementId) {
+            const target = document.getElementById(elementId);
+            if(target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function viewDetail(id) {
+            const data = gadgetDatabase[id];
+            const detailContent = document.getElementById('detail-content');
+            
+            let prosList = data.pros.map(p => `<li>${p}</li>`).join('');
+            let consList = data.cons.map(c => `<li>${c}</li>`).join('');
+            
+            let specRows = '';
+            for (const [key, value] of Object.entries(data.techSpecs)) {
+                specRows += `<tr><td class="label-spec">${key}</td><td>${value}</td></tr>`;
+            }
+
+            let ratingRows = '';
+            for (const [rKey, rVal] of Object.entries(data.ratings)) {
+                ratingRows += `<div class="rating-item"><span>${rKey}</span><span class="rating-stars">${rVal}</span></div>`;
+            }
+
+            detailContent.innerHTML = `
+                <div class="toc-box">
+                    <div class="toc-title">📌 Loncat Langsung ke Bagian:</div>
+                    <div class="toc-links">
+                        <a onclick="scrollToSection('sec-simple')">1. Penjelasan Teknologi</a> |
+                        <a onclick="scrollToSection('sec-tech')">2. Matriks Analisis & Perbandingan</a> |
+                        <a onclick="scrollToSection('sec-spec')">3. Lembar Spesifikasi</a> | 
+                        <a onclick="scrollToSection('sec-verdict')">4. Kelebihan & Kekurangan</a> |
+                        <a onclick="scrollToSection('sec-finance')">5. Kesimpulan Finansial</a>
+                    </div>
+                </div>
+
+                <div class="detail-container">
+                    <div class="detail-left">
+                        <div class="detail-img-container"><img src="${data.imgUrl}" alt="${data.name}"></div>
+                        <div class="rating-box">
+                            <div class="rating-title">Rating Skor Uji (${data.score}):</div>
+                            ${ratingRows}
+                        </div>
+                        
+                        <div class="shop-box">
+                            <h4>🛒 Akun Toko Resmi Pembelian Mitra:</h4>
+                            <div class="shop-links">
+                                <a href="${data.links.shopee}" target="_blank" class="shop-btn shopee">Shopee Official Store</a>
+                                <a href="${data.links.tokopedia}" target="_blank" class="shop-btn tokopedia">Tokopedia Official Store</a>
+                                <a href="${data.links.blibli}" target="_blank" class="shop-btn blibli">Blibli Official Store</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <span class="tag">${data.category}</span>
+                        <h2 style="margin: 0.25rem 0 0.1rem; font-size: 1.8rem;">${data.name}</h2>
+                        <h3 style="color: var(--danger); font-size: 1.4rem; margin-bottom: 0.6rem;">${data.price}</h3>
+                        <div class="verdict-badge ${data.verdictClass}">${data.verdict}</div>
+                        
+                        <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 1.5rem 0;">
+
+                        <h3 id="sec-simple" style="font-size: 1.25rem; margin: 1rem 0 0.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.2rem;">💡 1. Penjelasan Teknologi Komponen Sederhana:</h3>
+                        <div class="tech-simple-box">
+                            <h4>Bagaimana gawai ini bekerja secara mendasar?</h4>
+                            <p style="margin-top: 5px;">${data.techSimple}</p>
+                        </div>
+
+                        <h3 id="sec-tech" style="font-size: 1.25rem; margin: 1.5rem 0 0.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.2rem;">⚙️ 2. Matriks Analisis Arsitektur Teknologi & Perbandingan:</h3>
+                        <div class="tech-explain-box">
+                            <h4>Tiga Pilar Ulasan Utama Portal</h4>
+                            <p style="margin-top: 5px;">${data.techExplain}</p>
+                        </div>
+
+                        <h3 id="sec-spec" style="font-size: 1.25rem; margin: 1.5rem 0 0.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.2rem;">📋 3. Lembar Spesifikasi Data Lengkap:</h3>
+                        <table class="clean-spec-table"><tbody>${specRows}</tbody></table>
+
+                        <h3 id="sec-verdict" style="font-size: 1.25rem; margin: 1.5rem 0 0.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.2rem;">🏁 4. Analisis Kelebihan & Kekurangan Gawai:</h3>
+                        <div class="pros-cons-flex">
+                            <div class="pc-box pc-box-pros"><h4>🟢 10 Nilai Plus Spesifik</h4><ul>${prosList}</ul></div>
+                            <div class="pc-box pc-box-cons"><h4>🔴 10 Catatan Kekurangan</h4><ul>${consList}</ul></div>
+                        </div>
+
+                        <h3 id="sec-finance" style="font-size: 1.25rem; margin: 1.5rem 0 0.3rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.2rem;">💰 5. Analisis Kesimpulan Finansial:</h3>
+                        <div class="financial-box">
+                            <h4>Evaluasi Nilai Investasi Gawai</h4>
+                            <p>${data.financialAnalysis}</p>
+                        </div>
+
+                    </div>
+                </div>
+            `;
+            switchPage('detail');
+        }
+
+        function initCompareDropdowns() {
+            const select1 = document.getElementById('compare1');
+            const select2 = document.getElementById('compare2');
+            if(!select1 || !select2) return;
+            let optionsHtml = '<option value="">-- Pilih Gadget --</option>';
+            for (const [id, data] of Object.entries(gadgetDatabase)) {
+                optionsHtml += `<option value="${id}">${data.name}</option>`;
+            }
+            select1.innerHTML = optionsHtml;
+            select2.innerHTML = optionsHtml;
+        }
+
+        function processComparison() {
+            const id1 = document.getElementById('compare1').value;
+            const id2 = document.getElementById('compare2').value;
+            const area = document.getElementById('compare-result-area');
+            
+            if(!id1 || !id2) {
+                area.innerHTML = `<p style="text-align: center; color: var(--gray); padding: 2rem; background: white; border-radius: 8px;">Silakan pilih dua gawai untuk dibandingkan.</p>`;
+                return;
+            }
+            if(id1 === id2) {
+                area.innerHTML = `<p style="text-align: center; color: var(--danger); padding: 2rem; background: white; border-radius: 8px; font-weight: bold;">Harap pilih dua perangkat berbeda!</p>`;
+                return;
+            }
+            
+            const g1 = gadgetDatabase[id1];
+            const g2 = gadgetDatabase[id2];
+            const allKeys = new Set([...Object.keys(g1.techSpecs), ...Object.keys(g2.techSpecs)]);
+            let specRowsHtml = '';
+            
+            allKeys.forEach(key => {
+                specRowsHtml += `
+                    <tr>
+                        <td style="font-weight: bold; background: #f1f5f9; font-size:0.85rem;">${key}</td>
+                        <td style="font-size:0.85rem;">${g1.techSpecs[key] || '-'}</td>
+                        <td style="font-size:0.85rem;">${g2.techSpecs[key] || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            area.innerHTML = `
+                <table class="compare-table-result">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Parameter</th>
+                            <th style="width: 40%;">${g1.name}</th>
+                            <th style="width: 40%;">${g2.name}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>Harga Resmi</strong></td><td style="color:var(--danger); font-weight:bold;">${g1.price}</td><td style="color:var(--danger); font-weight:bold;">${g2.price}</td></tr>
+                        <tr><td><strong>Skor Uji</strong></td><td style="color:var(--primary); font-weight:bold;">★ ${g1.score}</td><td style="color:var(--primary); font-weight:bold;">★ ${g2.score}</td></tr>
+                        <tr><td><strong>Kesimpulan</strong></td><td><span class="verdict-badge ${g1.verdictClass}" style="margin:0;">${g1.verdict}</span></td><td><span class="verdict-badge ${g2.verdictClass}" style="margin:0;">${g2.verdict}</span></td></tr>
+                        ${specRowsHtml}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        window.onload = function() {
+            renderEditorsChoice();
+            initCompareDropdowns();
+        };
+    </script>
+</body>
+</html
